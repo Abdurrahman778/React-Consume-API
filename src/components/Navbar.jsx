@@ -22,22 +22,12 @@ export default function Navbar() {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav">
             <li className="nav-item">
-              <a className="nav-link active" aria-current="page" href="#">
-                Home
-              </a>
+              <Link to='/profile' className="nav-link active">
+                Profile
+              </Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#">
-                Features
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">
-                Pricing
-              </a>
-            </li>
-            <li className="nav-item">
-              <Link to='/login' className="nav-link active" href="/login">
+              <Link to='/login' className="nav-link active">
                 Login
               </Link>
             </li>
