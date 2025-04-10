@@ -44,6 +44,11 @@ export default function Navbar() {
                   </Link>
                 </li>
                 <li className="nav-item">
+                  <Link to="/stuffs" className="nav-link active">
+                    Stuff
+                  </Link>
+                </li>
+                <li className="nav-item">
                   <button className="nav-link active" onClick={logoutHandler}>
                     Logout
                   </button>

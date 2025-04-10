@@ -6,6 +6,7 @@ import Template from "../layouts/template";
 import Dashboard from "../pages/Dashboard";
 import PrivatePage from "../pages/middleware/PrivatePage";
 import GuestPage from "../pages/middleware/GuestPage";
+import StuffIndex from "../pages/stuffs/index";
 
 export const router = createBrowserRouter([
   {
@@ -26,8 +27,11 @@ export const router = createBrowserRouter([
       {
         element: <PrivatePage />,
         children: [
+          { path: "dashboard", element: <Dashboard /> },
           { path: "profile", element: <Profile /> },
-          { path: "dashboard", element: <Dashboard /> }
+          { 
+            path: 'stuffs', element: <StuffIndex />
+          },
         ]
       }
     ],
