@@ -1,75 +1,78 @@
-import axios from "axios";
 import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
-  // state : menyimpan data di project react
-  // login: nama datanya, setLogin: func untuk mengisi datanya
-  // useState(): membuat state dan nilai default
-  const [login, setLogin] = useState({
-    username: "",
-    password: "",
-  });
+    const [login, setLogin] = useState({
+        username: "",
+        password: ""
+    });
 
-  const [error, setError] = useState(false);
+    // method untuk memannipulasi yang berhubungan dengan routing
+    let navigate = useNavigate();
 
-  function loginProcess(e) {
-    e.preventDefault();
-    axios
-      .post("http://localhost:8000/login", login)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((error) => {
-        setError(error.response.data);
-        console.log(error.response.data);
-      });
-  }
-  return (
-    //class menjadi classname
-    <div className="d-flex justify-content-center align-items-center mt-5">
-      <form className="card shadow p-4 w-50" onSubmit={loginProcess}>
-        <h2 className="text-center fw-bold text-primary mb-4">Login</h2>
-        {Object.keys(error).length > 0 ? (
-          <div className="alert alert-danger m-2 p-2">
-            <ol>
-              {Object.entries(error.data).map(([key, value]) => (
-                <li>{value}</li>
-              ))}
-            </ol>
-          </div>
-        ) : ''
-        }
-        <div className="mb-3">
-          <label htmlFor="username" className="form-label">
-            Username
-          </label>
-          <input
-            type="text"
-            id="username"
-            className="form-control w-100"
-            placeholder="Masukan Username Anda"
-            onChange={(e) => setLogin({ ...login, username: e.target.value })}
-          />
-          {/* onchange: ketikan input berubah nilai value, data dari state login dikeluarkan (...login), diganti bagian username menjadi value input terbaru (e.target.value) */}
-        </div>
-        <div className="mb-3">
-          <label htmlFor="email" className="form-label">
-            Password
-          </label>
-          <input
-            type="text"
-            id="password"
-            className="form-control w-100"
-            placeholder="Masukan password Anda"
-            onChange={(e) => setLogin({ ...login, password: e.target.value })}
-          />
-        </div>
-        <div className="mt-3">
-          <button className="btn btn-primary w-100 text-center" type="submit">
-            Submit
-          </button>
-        </div>
-      </form>
-    </div>
-  );
+    function LoginProcess(e) {
+        e.preventDefault();
+        axios.post('http://45.64.100.26:88/API-Lumen/public/login', login)
+        .then(res => {
+            console.log(res);
+            // jika login berhasil simpan data token dan user ke localstorage
+            localStorage.setItem('access_token', res.data.data.access_token);
+            // gunakan JSON Stringify untuk mengubah object menjadi string, localstorage hanya bisa menyimpan string
+            localStorage.setItem('user', JSON.stringify(res.data.data.user));
+            // urutan titik setelah res (res.) disesuaikan isi res pada console log
+            navigate('/dashboard');
+            // mengarahkan ke halaman dashboard
+        })
+        .catch(err => {
+           setError(err.response.data);
+        });
+    }
+
+    const [error,setError] = useState([])
+
+    return (
+        <form className="card w-50 d-block mx-auto mt-5" onSubmit={LoginProcess}>
+            <div className="card-header text-center fw-bold fs-3">Login</div>
+            {
+                Object.keys(error).length > 0 ? (
+                    <ol className="alert alert-danger">
+                        {
+                            Object.entries(error.data).length > 0 ?
+                            Object.entries(error.data).map(([key,value]) => (
+                                <li>{value}</li>
+                            )) : error.message
+                        }
+                    </ol>
+                ) : ''
+            }
+            <div className="card-body">
+                <div className="mb-3">
+                    <label className="form-label">Username</label>
+                    <input 
+                        type="text" 
+                        className="form-control" 
+                        id="username"
+                        placeholder="Masukan Username"
+                        value={login.username}
+                        onChange={(e) => setLogin({...login, username: e.target.value })}
+                    />
+                </div>
+                <div className="mb-3">
+                    <label className="form-label">Password</label>
+                    <input 
+                        type="password" 
+                        className="form-control" 
+                        id="password"
+                        placeholder="Masukan Password"
+                        value={login.password}
+                        onChange={(e) => setLogin({...login, password: e.target.value })}
+                    />
+                </div>
+                <div className="d-grid">
+                    <button className="btn btn-primary" type="submit">Login</button>
+                </div>
+            </div>
+        </form>
+    );
 }

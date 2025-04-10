@@ -1,8 +1,26 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 // import Seno from "./assets/images/seno.png";
 
 
 export default function Profile() {
+  const [userData, setUserData] = useState({
+    username: "",
+    email: "",
+    role: "",
+  });
+
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (user) {
+      const parsedUser = JSON.parse(user);
+      setUserData({
+        username: parsedUser.username,
+        email: parsedUser.email,
+        role: parsedUser.role,
+      });
+    }
+  }, []);
+
   return (
     <div className="container-fluid d-flex justify-content-center align-items-center vh-100">
       <div className="card text-center" style={{ width: "50%", maxWidth: "800px" }}>
@@ -13,10 +31,9 @@ export default function Profile() {
         />
         <div className="card-header">Profile</div>
         <div className="card-body">
-          <h5 className="card-title">Email : Abdurrahman@gmail.com</h5>
-          <h5 className="card-title">Username : Abdurrahman</h5>
-          <h5 className="card-title">Role: ATMIN</h5>
-          <h5 className="card-title">Status: Jomblo</h5>
+          <h5 className="card-title">Email : {userData.email}</h5>
+          <h5 className="card-title">Username : {userData.username}</h5>
+          <h5 className="card-title">Role: {userData.role}</h5>
           {/* <p className="card-text">
             With supporting text below as a natural lead-in to additional content.
           </p>
