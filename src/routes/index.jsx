@@ -7,33 +7,34 @@ import Dashboard from "../pages/Dashboard";
 import PrivatePage from "../pages/middleware/PrivatePage";
 import GuestPage from "../pages/middleware/GuestPage";
 import StuffIndex from "../pages/stuffs/index";
+import InboundIndex from "../pages/inbounds/index";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <Template />,
     children: [
-      { 
-        path: "/", 
-        element: <App /> 
+      {
+        path: "/",
+        element: <App />,
       },
-      { 
-        path: "/login", 
+      {
         element: <GuestPage />,
-        children : [
-          {path: "/login", element: <Login />},
-        ] 
+        children: [
+          { path: "login", element: <Login /> }
+        ]
       },
       {
         element: <PrivatePage />,
         children: [
           { path: "dashboard", element: <Dashboard /> },
           { path: "profile", element: <Profile /> },
-          { 
-            path: 'stuffs', element: <StuffIndex />
+          {
+            path: "stuffs", element: <StuffIndex />,
           },
-        ]
-      }
+          { path: "inbound", element: <InboundIndex /> },
+        ],
+      },
     ],
   },
 ]);
