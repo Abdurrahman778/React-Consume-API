@@ -1,11 +1,12 @@
-// "use client"
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Bell, User, Menu } from "lucide-react";
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const token = localStorage.getItem("access_token");
+  const user = JSON.parse(localStorage.getItem("user")); // Get user data
 
   function logoutHandler() {
     localStorage.removeItem("access_token");
@@ -13,11 +14,14 @@ export default function Navbar() {
     navigate("/login");
   }
 
+  // Check if route is active
+  const isActive = (path) => location.pathname === path;
+
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
-        <Link className="navbar-brand fw-bold text-primary ms-3" to="/">
-          Inventaris
-        </Link>
+      <Link className="navbar-brand fw-bold text-primary ms-3" to="/">
+        Inventaris
+      </Link>
       <div className="container-fluid px-4" style={{ color: "#393E46" }}>
         <button
           className="navbar-toggler border-0"
@@ -36,25 +40,59 @@ export default function Navbar() {
             {token && (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link px-3" to="/dashboard">
+                  <Link 
+                    className={`nav-link px-3 ${isActive('/dashboard') ? 'active fw-bold' : ''}`} 
+                    to="/dashboard"
+                  >
                     Dashboard
                   </Link>
                 </li>
-                <li className="nav-item">
-                  <Link className="nav-link px-3" to="/stuffs">
-                    Stuff
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link px-3" to="/profile">
-                    Profile
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link px-3" to="/inbound">
-                    Inbound
-                  </Link>
-                </li>
+
+                {/* Staff Menu Items */}
+                {user?.role === "staff" ? (
+                  <li className="nav-item dropdown">
+                    <a
+                      className="nav-link px-3 dropdown-toggle"
+                      href="#"
+                      role="button"
+                      data-bs-toggle="dropdown"
+                    >
+                      Lending
+                    </a>
+                    <ul className="dropdown-menu">
+                      <li>
+                        <Link className="dropdown-item" to="/staff/lendings">
+                          New Lending
+                        </Link>
+                      </li>
+                      <li>
+                        <Link className="dropdown-item" to="/lendings/data">
+                          Lending Data
+                        </Link>
+                      </li>
+                    </ul>
+                  </li>
+                ) : (
+                  // Admin Menu Items
+                  <>
+                    <li className="nav-item">
+                      <Link 
+                        className={`nav-link px-3 ${isActive('/admin/stuffs') ? 'active fw-bold' : ''}`} 
+                        to="/stuffs"
+                      >
+                        Inventory
+                      </Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link 
+                        className={`nav-link px-3 ${isActive('/admin/inbound') ? 'active fw-bold' : ''}`} 
+                        to="/inbound"
+                      >
+                        Inbound
+                      </Link>
+                    </li>
+                  </>
+                )}
               </>
             )}
           </ul>
@@ -69,51 +107,6 @@ export default function Navbar() {
               </Link>
             ) : (
               <>
-                {/* <div className="dropdown d-none d-sm-block me-3">
-                  <a
-                    className="btn btn-sm btn-light rounded-circle position-relative"
-                    href="#"
-                    role="button"
-                    id="notificationDropdown"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    <Bell size={18} />
-                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                      2
-                      <span className="visually-hidden">
-                        unread notifications
-                      </span>
-                    </span>
-                  </a>
-                  <ul
-                    className="dropdown-menu dropdown-menu-end shadow-sm"
-                    aria-labelledby="notificationDropdown"
-                  >
-                    <li>
-                      <h6 className="dropdown-header">Notifications</h6>
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        New inventory item added
-                      </a>
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        Stock update required
-                      </a>
-                    </li>
-                    <li>
-                      <hr className="dropdown-divider" />
-                    </li>
-                    <li>
-                      <a className="dropdown-item small" href="#">
-                        View all notifications
-                      </a>
-                    </li>
-                  </ul>
-                </div> */}
-
                 <div className="dropdown">
                   <a
                     className="d-flex align-items-center text-decoration-none dropdown-toggle"
@@ -129,25 +122,25 @@ export default function Navbar() {
                     >
                       <User size={16} />
                     </div>
-                    <span className="d-none d-md-block">Profile</span>
+                    <span className="d-none d-md-block">
+                      {user?.username || 'Profile'}
+                      {/* {user?.role && (
+                        <small className="d-block text-muted">
+                          {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                        </small>
+                      )} */}
+                    </span>
                   </a>
                   <ul
                     className="dropdown-menu dropdown-menu-end shadow-sm"
                     aria-labelledby="userDropdown"
                   >
-                     {/* <li>
+                    <li>
                       <Link className="dropdown-item" to="/profile">
                         My Profile
                       </Link>
                     </li>
-                    <li>
-                      <Link className="dropdown-item" to="/settings">
-                        Settings
-                      </Link>
-                    </li> 
-                    <li>
-                      <hr className="dropdown-divider" />
-                    </li> */}
+                    <li><hr className="dropdown-divider" /></li>
                     <li>
                       <a
                         className="dropdown-item text-danger"

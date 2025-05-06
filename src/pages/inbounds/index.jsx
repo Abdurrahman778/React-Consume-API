@@ -30,6 +30,8 @@ export default function InboundIndex() {
     inboundId: null,
     stuffName: "",
   });
+  const [search, setSearch] = useState("");
+  const [filteredInbounds, setFilteredInbounds] = useState([]);
 
   const fetchInbound = () => {
     const headers = {
@@ -94,6 +96,13 @@ export default function InboundIndex() {
     fetchInbound();
   }, []);
 
+  useEffect(() => {
+    const filtered = inbounds.filter((item) =>
+      item.stuff.name.toLowerCase().includes(search.toLowerCase())
+    );
+    setFilteredInbounds(filtered);
+  }, [search, inbounds]);
+
   const handleDelete = () => {
     const headers = {
       Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -139,11 +148,27 @@ export default function InboundIndex() {
         <div className="card border-0 shadow-lg">
           <div className="card-header bg-white py-3 d-flex justify-content-between align-items-center">
             <h5 className="mb-0 fw-bold text-dark">Inbound History</h5>
-            <button className="btn btn-success" 
-              onClick={() => {
-              exportExcel(true);
-              }}
-            > Export Excel</button>
+            <div className="d-flex align-items-center gap-3">
+              <div className="input-group">
+                <span className="input-group-text bg-white border-end-0">
+                  <i className="bi bi-search text-muted"></i>
+                </span>
+                <input
+                  type="text"
+                  className="form-control border-start-0"
+                  placeholder="Search inbounds..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
+              <button 
+                className="btn btn-success d-flex align-items-center gap-2"
+                onClick={exportExcel}
+              >
+                <i className="bi bi-file-excel"></i>
+                Export Excel
+              </button>
+            </div>
           </div>
           <div className="card-body p-0">
             <div className="table-responsive">
@@ -158,8 +183,15 @@ export default function InboundIndex() {
                   </tr>
                 </thead>
                 <tbody>
-                  {inbounds.length > 0 ? (
-                    inbounds.map((item, index) => (
+                  {filteredInbounds.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="text-center py-4 text-muted">
+                        <i className="bi bi-inbox fs-1 d-block mb-2"></i>
+                        No inbound records found.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredInbounds.map((item, index) => (
                       <tr key={item.id}>
                         <td className="py-3 px-4">{index + 1}</td>
                         <td className="py-3 px-4 fw-semibold">
@@ -194,19 +226,12 @@ export default function InboundIndex() {
                                 })
                               }
                             >
-                              Delete
+                              <i className="bi bi-trash"></i>
                             </button>
                           </div>
                         </td>
                       </tr>
                     ))
-                  ) : (
-                    <tr>
-                      <td colSpan={5} className="text-center py-4 text-muted">
-                        <i className="bi bi-inbox fs-1 d-block mb-2"></i>
-                        No inbound records found.
-                      </td>
-                    </tr>
                   )}
                 </tbody>
               </table>

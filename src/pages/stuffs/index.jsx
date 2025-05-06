@@ -6,7 +6,7 @@ import Modal from "../../components/Modal";
 import Snackbar from "../../components/Snackbar";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import * as XLSX from "xlsx";
-import {saveAs} from "file-saver";
+import { saveAs } from "file-saver";
 
 export default function StuffIndex() {
   const [stuffs, setStuffs] = useState([]);
@@ -123,12 +123,10 @@ export default function StuffIndex() {
     const formattedData = stuffs.map((item, index) => ({
       // format data apa saja yang ada di data excel nya
       No: index + 1,
-      Title : item.name,
+      Title: item.name,
       Type: item.type,
-      TotalAvailable: item.stuff_stock ? 
-      item.stuff_stock.total_available : 0,
-      TotalDefec: item.stuff_stock ? 
-      item.stuff_stock.total_defec : 0,
+      TotalAvailable: item.stuff_stock ? item.stuff_stock.total_available : 0,
+      TotalDefec: item.stuff_stock ? item.stuff_stock.total_defec : 0,
     }));
 
     // ubah array of object jadi worsheet excel
@@ -200,12 +198,8 @@ export default function StuffIndex() {
                   Manage your inventory items
                 </small>
               </div>
-              <div className="d-flex flex-column flex-md-row justify-content-between gap-3 mb-3">
-                {/* Search Input */}
-                {/* <div
-                  className="input-group shadow-sm"
-                  style={{ maxWidth: "400px" }}
-                >
+              <div className="d-flex align-items-center gap-2" style={{ maxWidth: "500px" }}>
+                <div className="input-group" style={{ maxWidth: "300px" }}>
                   <span className="input-group-text bg-white border-end-0">
                     <i className="bi bi-search text-muted"></i>
                   </span>
@@ -216,28 +210,26 @@ export default function StuffIndex() {
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                   />
-                </div> */}
+                </div>
 
                 <button
-                  className="btn btn-primary shadow-sm"
+                  className="btn btn-primary btn-sm"
                   onClick={() => {
                     setModalMode("add");
                     setIsModalOpen(true);
                   }}
                 >
-                  <i className="bi bi-plus-circle"></i>
-                  <span>Add New Item</span>
+                  <i className="bi bi-plus-circle me-2"></i>
+                  Add
                 </button>
+
                 <button
-                  className="btn btn-success shadow-sm"
-                  onClick={() => {
-                  exportExcel(true);
-                  }}
+                  className="btn btn-success btn-sm"
+                  onClick={exportExcel}
                 >
-                  <i className="bi bi-plus-circle"></i>
-                  <span>Export Excel</span>
+                  <i className="bi bi-file-excel me-2"></i>
+                  Export
                 </button>
-                
               </div>
             </div>
           </div>
@@ -311,19 +303,19 @@ export default function StuffIndex() {
                             className="btn btn-outline-success btn-sm"
                             onClick={() => handleStockAction(item.id)}
                           >
-                            <i className="bi bi-plus-circle me-1"></i>Stock
+                            <i className="bi bi-plus-circle me-1"></i>
                           </button>
                           <button
                             className="btn btn-outline-primary btn-sm"
                             onClick={() => handleEdit(item)}
                           >
-                            <i className="bi bi-pencil me-1"></i>Edit
+                            <i className="bi bi-pencil me-1"></i>
                           </button>
                           <button
                             className="btn btn-outline-danger btn-sm"
                             onClick={() => handleDelete(item.id)}
                           >
-                            <i className="bi bi-trash me-1"></i>Delete
+                            <i className="bi bi-trash me-1"></i>
                           </button>
                         </div>
                       </td>
